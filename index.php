@@ -13,6 +13,8 @@
         <input type="radio" name="choices" value="temperature"><br>
         <label>GRADES</label><br>
         <input type="radio" name="choices" value="gwa" onclick="showInput('boxes')"><br>
+         <label>MIDTERM/FINAL</label><br>
+        <input type="radio" name="choices" value="exam" onclick="showInput('exams')"><br>
         <input type="text" name="value"><br><br>
        
         
@@ -25,11 +27,25 @@
             <input type="text" name="activities"><br>
             <label>ATTENDACE</label><br>
             <input type="text" name="attendance"><br>
-            <label>MIDTERM</label><br>
-            <input type="text" name="midterm"><br>
-            <label>FINALS</label><br>
-            <input type="text" name="finals"><br>
+                
+               
+                
+                    <label>MIDTERM</label><br>
+                    <input type="text" name="midterm"><br>
+                    <label>FINALS</label><br>
+                    <input type="text" name="finals"><br>
+               
+
             </div>
+        
+        <div id="midtermFinal" class="box" style="display:none;">
+                
+                    <label>MIDTERM</label><br>
+                    <input type="text" name="midterm_term"><br>
+                    <label>FINALS</label><br>
+                    <input type="text" name="finals_finals"><br>
+        </div>
+
 
         <input type="submit" value="confirm" name="confirm" >
 
@@ -45,9 +61,13 @@
 
     // Hide both first
     document.getElementById("boxInput").style.display = "none";
+     document.getElementById("midtermFinal").style.display = "none";
 
     if(type === "boxes") {
         document.getElementById("boxInput").style.display = "block";
+    }
+     if(type === "exams") {
+        document.getElementById("midtermFinal").style.display = "block";
     }
 
     }
@@ -83,10 +103,17 @@ function finalGrade($quiz,$recit,$activities,$attendance,$midterm,$finals){
            ($recit * 0.10) +
            ($activities * 0.25) +
            ($attendance * 0.10) +
-           ($midterm * 0.15) +
+           ($midterm * 0.20) +
            ($finals * 0.20);
 
     return $gwa;
+
+}
+function midtermFinal($midterm_exam,$finals_exam){
+    $ave=($midterm_exam * 0.20) +
+        ($finals_exam * 0.20);
+
+    return $ave;
 
 }
 if(isset($_POST["confirm"])){
@@ -102,6 +129,10 @@ if(isset($_POST["confirm"])){
         $attendance = $_POST["attendance"];
         $midterm = $_POST["midterm"];
         $finals = $_POST["finals"];
+
+
+        $midterm_exam = $_POST["midterm_term"];
+        $finals_exam = $_POST["finals_finals"];
 
         if($choice == "circumference"){
             $radius = strlen($value);
@@ -123,10 +154,31 @@ if(isset($_POST["confirm"])){
             echo "the temp was: {$celsius}";
         }
         elseif($choice == "gwa"){
-            
             $result = finalGrade($quiz, $recit, $activities, $attendance, $midterm, $finals);
-            echo "the result of your grades was:{$result}";
+                echo "the result of your grades was:{$result}" . "<br>";
+            
+            if($result >=96.00 && $result <=100.00){
+                echo "1.00";
+            }
+             elseif($result >=94 && $result <=95.99){
+                echo "1.25";
+            }
+            elseif($result >=91 && $result <=93.99){
+                echo "1.50";
+            }
+            elseif($result >=89 && $result <=90.99){
+                echo "1.75";
+            }
+            elseif($result >=86 && $result <=88.99){
+                echo "2.00";
+            }
+            
 
+        }
+        elseif($choice == "exam"){
+
+            $results=midtermFinal($midterm_exam,$finals_exam);
+             echo "the midterm and finals contributed {$results}% of your grade";
 
         }
 
